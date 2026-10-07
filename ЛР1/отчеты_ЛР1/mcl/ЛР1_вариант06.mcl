@@ -1,0 +1,69 @@
+writeln "**************************************************";
+writeln "*   Моделирование алгоритма сложения/вычитания   *";
+writeln "*                   Вариант 6                    *";
+writeln "**************************************************";
+
+REG RA[9],RB[9],R1[9],RC[9],INPA[8],INPB[8],Z[9],I[1];
+
+start:
+   write "A=";read INPA;
+   write "B=";read INPB;
+   write "I (0-сложение, 1-вычитание) I=";read I;
+
+   RA:=INPA; RA[8..8]:=INPA[7..7];
+   RB:=INPB; RB[8..8]:=INPB[7..7];
+
+   write "RA=",$B9 RA,"=";
+   IF RA[8..8]=0 THEN writeln $D3 RA;
+   IF RA[8..8]=1 THEN GOSUB PRA;
+
+   write "RB=",$B9 RB,"=";
+   IF RB[8..8]=0 THEN writeln $D3 RB;
+   IF RB[8..8]=1 THEN GOSUB PRB;
+
+   IF I=0 THEN GOSUB SLOG;
+   IF I=1 THEN GOSUB VICH;
+
+   writeln "R1=",$B9 R1;
+   writeln "RC=",$B9 RC;
+
+  IF RC[8..8]<>RC[7..7] THEN
+       writeln "!!! Переполнение разрядной сетки !!!";
+  IF (RC[8..8]=RC[7..7]) AND (RC[8..8]=0) THEN
+       writeln "Результат Z=",$B9 RC,"=",$D3 RC;
+  IF (RC[8..8]=RC[7..7]) AND (RC[8..8]=1) THEN GOSUB WREZ;
+
+writeln "***************** Конец программы ****************";
+
+END;
+
+SLOG:
+   writeln "Сложение (A+B):";
+   R1:=RB;
+   RC:=RA+R1;
+RETURN;
+
+VICH:
+   writeln "Вычитание (A-B):";
+   R1:=NOT RB;
+   RC:=RA+R1;
+   RC:=RC+1;
+RETURN;
+
+PRA:
+   Z:=COM(RA);
+   writeln "-",$D3 Z;
+RETURN;
+
+PRB:
+   Z:=COM(RB);
+   writeln "-",$D3 Z;
+RETURN;
+
+WREZ:
+   Z:=COM(RC);
+   Z[8..8]:=1;
+   write "Результат Z= ",$B9 Z,"=-";
+   Z[8..8]:=0;
+   writeln $D3 Z;
+RETURN;
